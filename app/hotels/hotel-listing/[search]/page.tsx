@@ -3,6 +3,16 @@ import { HotelListing } from "@/components/HotelListing";
 import SearchForm from "@/components/SearchForm";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
+import { Filter } from "lucide-react";
 
 function Page({ params }: { params: { search: string } }) {
   const searchParams = useSearchParams();
@@ -57,11 +67,30 @@ function Page({ params }: { params: { search: string } }) {
       <div className="w-full max-w-7xl mx-auto mt-8 bg-primary-foreground p-4 rounded-lg shadow-md">
         <SearchForm values={currentSearch} />
       </div>
+      <div className="flex w-full mt-6 lg:hidden px-4">
+        <Sheet>
+          <SheetTrigger>
+            <Button variant="outline">
+              <Filter /> Filter
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left">
+            <SheetHeader>
+              <SheetTitle>Are you absolutely sure?</SheetTitle>
+              <SheetDescription>
+                This action cannot be undone. This will permanently delete your
+                account and remove your data from our servers.
+              </SheetDescription>
+            </SheetHeader>
+          </SheetContent>
+        </Sheet>
+      </div>
       <div className="grid grid-cols-4 gap-4 w-full mt-6">
-        <div className="border h-[40vh] hidden md:flex flex-col items-center p-2 rounded-lg">
+        <div className="border h-[40vh] hidden lg:flex flex-col items-center p-2 rounded-lg">
           Sidebar Goes Here
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-3 col-span-4 md:col-span-3 gap-4 mx-auto w-full">
+
+        <div className="grid grid-cols-1 md:grid-cols-4 col-span-4 md:col-span-4 lg:grid-cols-3 lg:col-span-3 gap-4 mx-auto w-full px-4">
           {loading ? (
             <div>Loading...</div>
           ) : (
