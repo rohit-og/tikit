@@ -74,17 +74,30 @@ function SearchForm({
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     const query = new URLSearchParams({
       location: values.location,
-      check_in_date: `${format(values.date.from, "yyyy-MM-dd")}`,
-      check_out_date: `${format(values.date.to, "yyyy-MM-dd")}`,
+      check_in_date: format(values.date.from, "yyyy-MM-dd"),
+      check_out_date: format(values.date.to, "yyyy-MM-dd"),
       adults: values.adults,
       children: values.children,
       rooms: values.rooms,
     });
+
+    // try {
+    //   const response = await fetch(`/api/getHotels?${query.toString()}`);
+    //   if (!response.ok) {
+    //     throw new Error(`HTTP error! status: ${response.status}`);
+    //   }
+    //   const data = await response.json();
+    //   console.log("Hotels data:", data);
+    // } catch (error) {
+    //   console.error("Error fetching hotels:", error);
+    // }
+
     router.push(`/hotels/hotel-listing/search?${query.toString()}`);
   }
+
   return (
     <Form {...form}>
       <form

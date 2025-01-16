@@ -3,10 +3,12 @@ import { HotelListing } from "@/components/HotelListing";
 import SearchForm from "@/components/SearchForm";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-const { getJson } = require("serpapi");
 
-function page({ params }: { params: { search: string } }) {
+function Page({ params }: { params: { search: string } }) {
   const searchParams = useSearchParams();
+  const [hotels, setHotels] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
   const search = {
     location: searchParams.get("location"),
     check_in_date: searchParams.get("check_in_date"),
@@ -15,6 +17,7 @@ function page({ params }: { params: { search: string } }) {
     children: searchParams.get("children"),
     rooms: searchParams.get("rooms"),
   };
+
   const [currentSearch, setCurrentSearch] = useState({
     location: search.location || "",
     date: {
@@ -26,41 +29,29 @@ function page({ params }: { params: { search: string } }) {
     rooms: search.rooms ? Number(search.rooms) : 1,
   });
 
-  console.log(search);
-
-  // const [hotels, setHotels] = useState<any[]>([]);
-  // const [loading, setLoading] = useState<boolean>(true);
-
-  // useEffect(() => {
-  //   const fetchHotels = async () => {
-  //     const response = await fetch(
-  //       "/api/getHotels?location=Bali Resorts&check_in_date=2025-01-11&check_out_date=2025-01-12&adults=2"
-  //     );
-  //     const data = await response.json();
-  //     setHotels(data);
-  //     setLoading(false);
-  //   };
-
-  //   fetchHotels();
-  // }, []);
-
-  // console.log(hotels);
-
   useEffect(() => {
     const fetchHotels = async () => {
       try {
         const response = await fetch(
-          "https://serpapi.com/search.json?engine=google_hotels&q=Bali+Resorts&check_in_date=2025-01-11&check_out_date=2025-01-12&adults=2&currency=USD&gl=us&hl=en&api_key=f8e014f2a0aaa4cf7e08e2afc14724575486bc3018e9b0bc033fdb3f4776f4cc",
-          { mode: "no-cors" }
+          `/api/getHotels?location=${search.location}&check_in_date=${search.check_in_date}&check_out_date=${search.check_out_date}&adults=${search.adults}`
         );
         const data = await response.json();
-        console.log(data);
-      } catch (e) {
-        console.log("Error fetching hotels", e);
+        setHotels(data.properties || []);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching hotels:", error);
+        setLoading(false);
       }
     };
+
     fetchHotels();
-  }, []);
+  }, [
+    search.location,
+    search.check_in_date,
+    search.check_out_date,
+    search.adults,
+  ]);
+
   return (
     <div className="flex flex-col max-w-7xl mx-auto">
       <div className="w-full max-w-7xl mx-auto mt-8 bg-primary-foreground p-4 rounded-lg shadow-md">
@@ -71,15 +62,17 @@ function page({ params }: { params: { search: string } }) {
           Sidebar Goes Here
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 col-span-4 md:col-span-3 gap-4 mx-auto w-full">
-          <HotelListing />
-          <HotelListing />
-          <HotelListing />
-          <HotelListing />
-          <HotelListing />
+          {loading ? (
+            <div>Loading...</div>
+          ) : (
+            hotels
+              .slice(0, 9)
+              .map((hotel, index) => <HotelListing key={index} hotel={hotel} />)
+          )}
         </div>
       </div>
     </div>
   );
 }
 
-export default page;
+export default Page;
