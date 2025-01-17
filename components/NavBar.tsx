@@ -42,7 +42,9 @@ export const NavBar = () => {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          <Button>Sign In</Button>
+          <Link href="/user/auth">
+            <Button>Sign In</Button>
+          </Link>
         </div>
       </div>
     </div>

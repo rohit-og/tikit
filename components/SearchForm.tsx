@@ -116,7 +116,11 @@ function SearchForm({
                 </FormLabel>
                 <FormMessage />
                 <FormControl>
-                  <Input {...field} placeholder="London, UK" />
+                  <Input
+                    {...field}
+                    className="bg-background"
+                    placeholder="London, UK"
+                  />
                 </FormControl>
               </FormItem>
             )}
@@ -186,7 +190,12 @@ function SearchForm({
                   <FormLabel className="flex">Adults</FormLabel>
                   <FormMessage />
                   <FormControl>
-                    <Input {...field} type="number" placeholder="Adults" />
+                    <Input
+                      {...field}
+                      className="bg-background"
+                      type="number"
+                      placeholder="Adults"
+                    />
                   </FormControl>
                 </FormItem>
               )}
@@ -201,7 +210,12 @@ function SearchForm({
                   <FormLabel className="flex">Children</FormLabel>
                   <FormMessage />
                   <FormControl>
-                    <Input {...field} type="number" placeholder="Children" />
+                    <Input
+                      {...field}
+                      className="bg-background"
+                      type="number"
+                      placeholder="Children"
+                    />
                   </FormControl>
                 </FormItem>
               )}
@@ -216,14 +230,19 @@ function SearchForm({
                   <FormLabel className="flex">Rooms</FormLabel>
                   <FormMessage />
                   <FormControl>
-                    <Input {...field} type="number" placeholder="Rooms" />
+                    <Input
+                      {...field}
+                      className="bg-background"
+                      type="number"
+                      placeholder="Rooms"
+                    />
                   </FormControl>
                 </FormItem>
               )}
             />
           </div>
           <div className="mt-auto">
-            <Button variant="secondary" type="submit" className="">
+            <Button type="submit" className="">
               Search
             </Button>
           </div>

@@ -3,6 +3,7 @@ import { HotelListing } from "@/components/HotelListing";
 import SearchForm from "@/components/SearchForm";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Sheet,
   SheetContent,
@@ -13,6 +14,15 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Filter } from "lucide-react";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 function Page({ params }: { params: { search: string } }) {
   const searchParams = useSearchParams();
@@ -64,7 +74,7 @@ function Page({ params }: { params: { search: string } }) {
 
   return (
     <div className="flex flex-col max-w-7xl mx-auto">
-      <div className="w-full max-w-7xl mx-auto mt-8 bg-primary-foreground p-4 rounded-lg shadow-md">
+      <div className="w-full max-w-7xl mx-auto mt-8 bg-secondary p-4 rounded-lg shadow-md">
         <SearchForm values={currentSearch} />
       </div>
       <div className="flex w-full mt-6 lg:hidden px-4">
@@ -85,18 +95,55 @@ function Page({ params }: { params: { search: string } }) {
           </SheetContent>
         </Sheet>
       </div>
-      <div className="grid grid-cols-4 gap-4 w-full mt-6">
+      <div className="grid grid-cols-4 gap-4 w-full mt-6 px-4">
         <div className="border h-[40vh] hidden lg:flex flex-col items-center p-2 rounded-lg">
           Sidebar Goes Here
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-4 col-span-4 md:col-span-4 lg:grid-cols-3 lg:col-span-3 gap-4 mx-auto w-full px-4">
-          {loading ? (
-            <div>Loading...</div>
-          ) : (
-            hotels
-              .slice(0, 9)
-              .map((hotel, index) => <HotelListing key={index} hotel={hotel} />)
+        <div className="col-span-4 md:col-span-4 lg:col-span-3">
+          <div className="grid grid-cols-1 md:grid-cols-4  lg:grid-cols-3  gap-4 mx-auto w-full ">
+            {loading ? (
+              <div>
+                <div className="flex flex-col space-y-3">
+                  <Skeleton className="h-[125px] w-[250px] rounded-xl" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-[250px]" />
+                    <Skeleton className="h-4 w-[200px]" />
+                  </div>
+                </div>
+              </div>
+            ) : (
+              hotels
+                .slice(0, 9)
+                .map((hotel, index) => (
+                  <HotelListing key={index} hotel={hotel} />
+                ))
+            )}
+          </div>
+          {!loading && (
+            <Pagination className="mt-6">
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious href="#" />
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationLink href="#" isActive>
+                    1
+                  </PaginationLink>
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationLink href="#">2</PaginationLink>
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationLink href="#">3</PaginationLink>
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationEllipsis />
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationNext href="#" />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
           )}
         </div>
       </div>

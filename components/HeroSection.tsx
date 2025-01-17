@@ -68,7 +68,7 @@ export const HeroSection = () => {
           </div>
         </div>
       </div>
-      <div className="w-full max-w-5xl mx-auto mt-8 absolute top-1/1 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-primary-foreground p-4 rounded-lg shadow-lg">
+      <div className="w-full max-w-5xl mx-auto mt-8 absolute top-1/1 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-secondary p-4 rounded-lg shadow-lg">
         <SearchForm values={searchValues} />
       </div>
     </div>

@@ -9,6 +9,7 @@ import {
 import Image from "next/image";
 import { ChevronRight, MapPin } from "lucide-react";
 import { Button } from "./ui/button";
+import Link from "next/link";
 
 interface HotelProps {
   name: string;
@@ -27,7 +28,7 @@ interface HotelProps {
 
 export const HotelListing = ({ hotel }: { hotel: HotelProps }) => {
   return (
-    <Card className="hover:scale-105 transition-all">
+    <Card className="hover:scale-105 transition-all flex flex-col justify-between">
       <Image
         src={hotel.images[0].thumbnail}
         alt={hotel.name}
@@ -43,20 +44,20 @@ export const HotelListing = ({ hotel }: { hotel: HotelProps }) => {
       </CardHeader>
       <CardContent>
         <div className="flex justify-between">
-          {/* <p>
-            <b>{hotel.rate_per_night.lowest}</b>/night
-          </p> */}
+          <p>{/* <b>{hotel.rate_per_night.lowest}</b>/night */}</p>
           {/* <p>
             {hotel.location.latitude.toFixed(2)},{" "}
             {hotel.location.longitude.toFixed(2)}
           </p> */}
         </div>
       </CardContent>
-      <CardFooter>
-        <Button className="w-full">
-          See availability
-          <ChevronRight />
-        </Button>
+      <CardFooter className="">
+        <Link href="/hotels/hotel-details/1" className="w-full">
+          <Button className="w-full">
+            See availability
+            <ChevronRight />
+          </Button>
+        </Link>
       </CardFooter>
     </Card>
   );
