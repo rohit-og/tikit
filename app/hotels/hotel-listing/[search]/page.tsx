@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/pagination";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
-import SidebarFilters from "@/components/UserComponents/Sidebar";
+import SidebarFilters from "@/components/Sidebar";
 
 function Page({ params }: { params: { search: string } }) {
   // const { status } = useSession({
@@ -72,6 +72,7 @@ function Page({ params }: { params: { search: string } }) {
         }`
       );
       const data = await response.json();
+      console.log(data);
 
       // Append new hotels to existing ones if using pageToken
       if (pageToken) {

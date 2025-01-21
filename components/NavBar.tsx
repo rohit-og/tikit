@@ -11,6 +11,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
 import Link from "next/link";
 import { routes } from "@/app/routes";
 
@@ -49,28 +51,35 @@ export const NavBar = () => {
           {session ? (
             <DropdownMenu>
               <DropdownMenuTrigger>
-                <Button variant="outline" size="icon">
-                  <User className="h-[1.2rem] w-[1.2rem]" />
-                </Button>
+                <Avatar>
+                  <AvatarImage src={session.user?.photo} />
+                  <AvatarFallback className="uppercase">
+                    {session.user?.name ? session.user.name[0] : "?"}
+                  </AvatarFallback>
+                </Avatar>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem>
-                  <User className="h-4 w-4 mr-2" />
-                  {session.user?.name
-                    ? session.user.name
-                        .split(" ")
-                        .map(
-                          (word) =>
-                            word.charAt(0).toUpperCase() +
-                            word.slice(1).toLowerCase()
-                        )
-                        .join(" ")
-                    : "Profile"}
+                  <Link className="flex" href="/user/profile/manage-profile">
+                    <User className="h-4 w-4 mr-2" />
+                    {session.user?.name
+                      ? session.user.name
+                          .split(" ")
+                          .map(
+                            (word) =>
+                              word.charAt(0).toUpperCase() +
+                              word.slice(1).toLowerCase()
+                          )
+                          .join(" ")
+                      : "Profile"}
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
                   <Settings className="h-4 w-4 mr-2" />
-                  Settings
+                  <Link className="flex" href="/user/profile/account-settings">
+                    Settings
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => signOut()}>
                   <LogOut className="h-4 w-4 mr-2" />

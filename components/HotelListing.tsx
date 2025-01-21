@@ -35,6 +35,11 @@ interface HotelProps {
     thumbnail: string;
   }[];
   ratings: Rating[];
+  property_token: string;
+
+  check_in_date: string;
+  check_out_date: string;
+  adults: number;
 }
 
 export const HotelListing = ({ hotel }: { hotel: HotelProps }) => {
@@ -73,7 +78,10 @@ export const HotelListing = ({ hotel }: { hotel: HotelProps }) => {
         </div>
       </CardContent>
       <CardFooter>
-        <Link href="/hotels/hotel-details/1" className="w-full">
+        <Link
+          href={`/hotels/hotel-details/search?q=${hotel.name}&check_in_date=${hotel.check_in_date}&check_out_date=${hotel.check_out_date}&adults=${hotel.adults}&currency=INR&gl=us&hl=en&property_token=${hotel.property_token}&api_key=${process.env.SERP_API_KEY}`}
+          className="w-full"
+        >
           <Button className="w-full">
             See availability
             <ChevronRight />

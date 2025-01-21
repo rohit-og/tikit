@@ -23,26 +23,58 @@ import {
 import UserRatings from "@/components/UserRatings";
 import HotelImages from "@/components/HotelImages";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
-const page = ({
-  params,
-}: {
-  params: {
-    id: string;
+const page = ({ params }: { params: { id: string } }) => {
+  const [hotel, setHotel] = useState<any[]>([]);
+  const searchParams = useSearchParams();
+  const search = {
+    location: searchParams.get("q"),
+    check_in_date: searchParams.get("check_in_date"),
+    check_out_date: searchParams.get("check_out_date"),
+    adults: searchParams.get("adults"),
+    property_token: searchParams.get("property_token"),
   };
-}) => {
+  console.log(search);
+
+  const fetchDetails = async (pageToken?: string) => {
+    try {
+      const response = await fetch(
+        `/api/getPropertyDetails?location=${search.location}&check_in_date=${
+          search.check_in_date
+        }&check_out_date=${search.check_out_date}&adults=${search.adults}${
+          pageToken ? `&property_token=${search.property_token}` : ""
+        }`
+      );
+      const data = await response.json();
+      setHotel(data);
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching hotels:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchDetails();
+  }, [
+    search.location,
+    search.check_in_date,
+    search.check_out_date,
+    search.adults,
+    search.property_token,
+  ]);
+
   return (
     <div className="w-full px-4 py-6">
       {/* header */}
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <div className="flex flex-col gap-4 max-w-[70%]">
-          <h1 className="text-2xl sm:text-3xl font-medium">
-            Hotel ka naam idhar aayega
-          </h1>
+          <h1 className="text-2xl sm:text-3xl font-medium">{hotel.name}</h1>
           <div className=" flex justify-between items-center">
             <div className="flex items-center gap-2">
               <MapPin />
-              Hotel, ka address, idhar
+              {params.id}
             </div>
             (32) Ratings
           </div>

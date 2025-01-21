@@ -4,7 +4,15 @@ export const routes = {
     protected: true,
   },
   profile: {
-    path: "/profile",
+    path: "/user/profile",
+    protected: true,
+  },
+  manageProfile: {
+    path: "/user/profile/manage-profile",
+    protected: true,
+  },
+  yourBooking: {
+    path: "/user/profile/your-bookings",
     protected: true,
   },
   auth: {
