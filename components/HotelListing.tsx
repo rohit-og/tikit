@@ -11,6 +11,7 @@ import Image from "next/image";
 import { ChevronRight, MapPin, Star } from "lucide-react";
 import { Button } from "./ui/button";
 import Link from "next/link";
+import { useHotel } from "@/store/HotelContext";
 
 interface Rating {
   stars: number;
@@ -43,6 +44,11 @@ interface HotelProps {
 }
 
 export const HotelListing = ({ hotel }: { hotel: HotelProps }) => {
+  const { selectedHotel, setSelectedHotel } = useHotel() ?? {
+    selectedHotel: null,
+    setSelectedHotel: () => {},
+  };
+
   const totalReviews =
     hotel.ratings?.reduce((sum, rating) => sum + rating.count, 0) || 0;
   const averageRating =
@@ -79,7 +85,8 @@ export const HotelListing = ({ hotel }: { hotel: HotelProps }) => {
       </CardContent>
       <CardFooter>
         <Link
-          href={`/hotels/hotel-details/search?q=${hotel.name}&check_in_date=${hotel.check_in_date}&check_out_date=${hotel.check_out_date}&adults=${hotel.adults}&currency=INR&gl=us&hl=en&property_token=${hotel.property_token}&api_key=${process.env.SERP_API_KEY}`}
+          href={`/hotels/hotel-details/${hotel.property_token}`}
+          onClick={() => setSelectedHotel(hotel)}
           className="w-full"
         >
           <Button className="w-full">

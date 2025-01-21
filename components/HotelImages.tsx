@@ -23,13 +23,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useHotel } from "@/store/HotelContext";
 const HotelImages = () => {
+  const { selectedHotel } = useHotel() ?? { selectedHotel: null };
+
   return (
     <div className="border rounded-lg relative">
       <Image
-        src="/images/hotel-1.jpg"
+        src={selectedHotel?.images[0]?.thumbnail || "/images/hotel-2.jpg"}
+        alt={selectedHotel?.name || "Hotel image"}
         className="w-full object-cover relative  h-[69vh] rounded-lg shadow-lg"
-        alt=""
         width={350}
         height={10}
       />
