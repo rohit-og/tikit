@@ -74,9 +74,11 @@ const page = ({ params }: { params: { id: string } }) => {
           <div className=" flex justify-between items-center">
             <div className="flex items-center gap-2">
               <MapPin />
-              {params.id}
+              {hotel.address}
             </div>
-            (32) Ratings
+            <p>
+              {hotel.overall_rating} ({hotel.reviews})
+            </p>
           </div>
         </div>
         <ActionButtons />
@@ -91,7 +93,7 @@ const page = ({ params }: { params: { id: string } }) => {
             <Card className="">
               <CardHeader>
                 <CardTitle className="text-3xl font-medium">
-                  1 KING BED WITH BALCONY
+                  {hotel.description}
                 </CardTitle>
                 <CardDescription className="text-lg">
                   Fits 2 Adults
@@ -121,7 +123,8 @@ const page = ({ params }: { params: { id: string } }) => {
                 </p>
                 <div className="flex flex-col gap-2">
                   <h1 className="text-3xl font-semibold">
-                    ₹ 8,599<span className="text-2xl font-medium">/Night</span>
+                    {hotel.rate_per_night.lowest}
+                    <span className="text-2xl font-medium">/Night</span>
                   </h1>
                   <Button className="w-[199px]">Book Now</Button>
                 </div>
@@ -132,7 +135,7 @@ const page = ({ params }: { params: { id: string } }) => {
                     <div className="h-14 w-16 flex items-center justify-center bg-accent rounded-lg">
                       <p className="text-lg font-semibold">4.4</p>
                     </div>
-                    <div className="w-[60%">
+                    <div className="w-[60%]">
                       <p className="text-lg font-semibold ]">
                         Excellent{" "}
                         <span className="text-lg font-thin">(254 ratings)</span>
