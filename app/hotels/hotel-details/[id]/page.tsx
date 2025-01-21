@@ -25,6 +25,7 @@ import HotelImages from "@/components/HotelImages";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useHotel } from "@/store/HotelContext";
 
 const page = ({ params }: { params: { id: string } }) => {
   const [hotel, setHotel] = useState<any[]>([]);
@@ -36,49 +37,25 @@ const page = ({ params }: { params: { id: string } }) => {
     adults: searchParams.get("adults"),
     property_token: searchParams.get("property_token"),
   };
-  console.log(search);
 
-  const fetchDetails = async (pageToken?: string) => {
-    try {
-      const response = await fetch(
-        `/api/getPropertyDetails?location=${search.location}&check_in_date=${
-          search.check_in_date
-        }&check_out_date=${search.check_out_date}&adults=${search.adults}${
-          pageToken ? `&property_token=${search.property_token}` : ""
-        }`
-      );
-      const data = await response.json();
-      setHotel(data);
-      console.log(data);
-    } catch (error) {
-      console.error("Error fetching hotels:", error);
-    }
-  };
+  const { selectedHotel } = useHotel() ?? { selectedHotel: null };
 
-  useEffect(() => {
-    fetchDetails();
-  }, [
-    search.location,
-    search.check_in_date,
-    search.check_out_date,
-    search.adults,
-    search.property_token,
-  ]);
-
+  console.log(selectedHotel);
   return (
     <div className="w-full px-4 py-6">
       {/* header */}
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <div className="flex flex-col gap-4 max-w-[70%]">
-          <h1 className="text-2xl sm:text-3xl font-medium">{hotel.name}</h1>
+          <h1 className="text-2xl sm:text-3xl font-medium">
+            {selectedHotel?.name}
+          </h1>
           <div className=" flex justify-between items-center">
             <div className="flex items-center gap-2">
               <MapPin />
-              {hotel.address}
+              {selectedHotel?.type}
             </div>
-            <p>
-              {hotel.overall_rating} ({hotel.reviews})
-            </p>
+            {selectedHotel?.ratings &&
+              `(${selectedHotel.ratings.length}) Ratings`}
           </div>
         </div>
         <ActionButtons />
@@ -93,17 +70,16 @@ const page = ({ params }: { params: { id: string } }) => {
             <Card className="">
               <CardHeader>
                 <CardTitle className="text-3xl font-medium">
-                  {hotel.description}
+                  {selectedHotel?.room_types?.[0]?.name || "Standard Room"}
                 </CardTitle>
                 <CardDescription className="text-lg">
-                  Fits 2 Adults
+                  Fits {selectedHotel?.adults || 2} Adults
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex flex-col gap-4">
                 <p>
-                  A boutique resort with an Indo-Portuguese architecture, the
-                  Ronil Goa offers lively holidays filled with recreational
-                  activities.{" "}
+                  {selectedHotel?.description ||
+                    "A comfortable stay awaits you"}
                   <Dialog>
                     <DialogTrigger>
                       <span className="text-primary cursor-pointer">More</span>
@@ -112,10 +88,8 @@ const page = ({ params }: { params: { id: string } }) => {
                       <DialogHeader>
                         <DialogTitle>Property Details</DialogTitle>
                         <DialogDescription>
-                          Lorem ipsum dolor sit amet consectetur adipisicing
-                          elit. Ex ducimus expedita, magni facilis libero quod
-                          tempore quae beatae sed rem aliquid iure eveniet,
-                          totam quasi placeat reiciendis ab et. Voluptate.
+                          {selectedHotel?.full_description ||
+                            selectedHotel?.description}
                         </DialogDescription>
                       </DialogHeader>
                     </DialogContent>
@@ -123,7 +97,7 @@ const page = ({ params }: { params: { id: string } }) => {
                 </p>
                 <div className="flex flex-col gap-2">
                   <h1 className="text-3xl font-semibold">
-                    {hotel.rate_per_night.lowest}
+                    ₹ {selectedHotel?.rate_per_night?.lowest || "8,599"}
                     <span className="text-2xl font-medium">/Night</span>
                   </h1>
                   <Button className="w-[199px]">Book Now</Button>
@@ -133,12 +107,16 @@ const page = ({ params }: { params: { id: string } }) => {
                 <div className=" flex flex-col gap-4">
                   <div className="flex justify-between border-2 rounded-lg p-4 gap-4 items-center w-full">
                     <div className="h-14 w-16 flex items-center justify-center bg-accent rounded-lg">
-                      <p className="text-lg font-semibold">4.4</p>
+                      <p className="text-lg font-semibold">
+                        {selectedHotel?.rating || "4.4"}
+                      </p>
                     </div>
-                    <div className="w-[60%]">
-                      <p className="text-lg font-semibold ]">
+                    <div className="w-[60%">
+                      <p className="text-lg font-semibold">
                         Excellent{" "}
-                        <span className="text-lg font-thin">(254 ratings)</span>
+                        <span className="text-lg font-thin">
+                          ({selectedHotel?.total_reviews || "254"} ratings)
+                        </span>
                       </p>
                     </div>
                     <div>
@@ -153,9 +131,12 @@ const page = ({ params }: { params: { id: string } }) => {
                         <MapPin />
                       </div>
                       <div className="flex flex-col justify-start w-[60%]">
-                        <p className="text-lg font-semibold">Baga</p>
+                        <p className="text-lg font-semibold">
+                          {selectedHotel?.location?.address || "Location"}
+                        </p>
                         <span className="text-sm font-thin">
-                          4 minutes walk to Baga Beach
+                          {selectedHotel?.distance_to_landmark ||
+                            "4 minutes walk to nearby attractions"}
                         </span>
                       </div>
                       <div>
@@ -178,5 +159,4 @@ const page = ({ params }: { params: { id: string } }) => {
     </div>
   );
 };
-
 export default page;

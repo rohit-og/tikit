@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import Footer from "@/components/Footer";
 import { AuthProvider } from "@/components/providers/AuthProvider";
 import { Toaster } from "react-hot-toast";
+import { HotelProvider } from "@/store/HotelContext";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -40,9 +41,11 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <AuthProvider>
-            <NavBar />
-            <Toaster position="top-center" />
-            {children}
+            <HotelProvider>
+              <NavBar />
+              <Toaster position="top-center" />
+              {children}
+            </HotelProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>
