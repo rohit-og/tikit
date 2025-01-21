@@ -1,18 +1,22 @@
 "use client";
 
 import { Button } from "./ui/button";
-import { Moon, MoonIcon, Sun } from "lucide-react";
+import { LogOut, Moon, MoonIcon, Settings, Sun, User } from "lucide-react";
 import { useTheme } from "next-themes";
+import { useSession, signOut } from "next-auth/react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
+import { routes } from "@/app/routes";
 
 export const NavBar = () => {
   const { setTheme } = useTheme();
+  const { data: session } = useSession();
   return (
     <div className="flex justify-between items-center p-4 border-b ">
       <div className="flex items-center justify-between w-full max-w-7xl mx-auto">
@@ -42,9 +46,43 @@ export const NavBar = () => {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          <Link href="/user/auth">
-            <Button>Sign In</Button>
-          </Link>
+          {session ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <Button variant="outline" size="icon">
+                  <User className="h-[1.2rem] w-[1.2rem]" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem>
+                  <User className="h-4 w-4 mr-2" />
+                  {session.user?.name
+                    ? session.user.name
+                        .split(" ")
+                        .map(
+                          (word) =>
+                            word.charAt(0).toUpperCase() +
+                            word.slice(1).toLowerCase()
+                        )
+                        .join(" ")
+                    : "Profile"}
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <Settings className="h-4 w-4 mr-2" />
+                  Settings
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => signOut()}>
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Link href={routes.auth.path}>
+              <Button>Sign In</Button>
+            </Link>
+          )}
         </div>
       </div>
     </div>

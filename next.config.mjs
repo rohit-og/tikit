@@ -10,6 +10,9 @@ const nextConfig = {
       "i.giatamedia.com",
     ],
   },
+  env: {
+    SERP_API_KEY: process.env.SERP_API_KEY,
+  },
 };
 
 export default nextConfig;

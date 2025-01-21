@@ -3,6 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
+import { toast, Toaster } from "react-hot-toast";
 
 import {
   Form,
@@ -13,6 +14,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import React from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Image from "next/image";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Enter a valid email." }).min(2, {
@@ -41,12 +48,8 @@ const registerSchema = z.object({
   }),
 });
 
-import React from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Image from "next/image";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-
 const page = () => {
+  const router = useRouter();
   // 1. Define your form.
   const loginForm = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -57,10 +60,28 @@ const page = () => {
   });
 
   // 2. Define a submit handler.
-  function onSubmitLogin(values: z.infer<typeof loginSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  async function onSubmitLogin(values: z.infer<typeof loginSchema>) {
+    try {
+      const result = await signIn("credentials", {
+        email: values.email,
+        password: values.password,
+        redirect: false,
+      });
+
+      if (result?.error) {
+        toast.error("Invalid email or password");
+        console.error("Login failed:", result.error);
+        // Add error notification here
+      } else {
+        toast.success("Successfully logged in!");
+        // Redirect to dashboard or home page
+        router.push("/");
+      }
+    } catch (error) {
+      toast.error("Something went wrong. Please try again.");
+      console.error("Login error:", error);
+      // Add error notification here
+    }
   }
 
   // 1. Define your form.
@@ -76,13 +97,45 @@ const page = () => {
   });
 
   // 2. Define a submit handler.
-  function onSubmitRegister(values: z.infer<typeof registerSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  // In the onSubmitRegister function:
+  async function onSubmitRegister(values: z.infer<typeof registerSchema>) {
+    try {
+      console.log("Submitting values:", values); // Debug log
+
+      const response = await fetch("/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstName: values.firstName,
+          lastName: values.lastName,
+          email: values.email,
+          password: values.password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success("Registration successful! Please login.");
+        // console.log("Registration successful:", data);
+        // Add success notification or redirect here
+      } else {
+        toast.error(data.message || "Registration failed");
+        // console.error("Server response:", data);
+        // Add error notification here
+      }
+    } catch (error) {
+      toast.error("Something went wrong. Please try again.");
+      // console.error("Registration error:", error);
+      // Add error notification here
+    }
   }
+
   return (
     <div className="relative">
+      {/* <Toaster position="top-center" /> */}
       <Image
         src="/images/hotel-2.jpg"
         className="h-[90vh] w-full object-cover"

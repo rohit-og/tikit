@@ -1,7 +1,7 @@
 "use client";
 import { HotelListing } from "@/components/HotelListing";
 import SearchForm from "@/components/SearchForm";
-import { useSearchParams } from "next/navigation";
+import { redirect, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -13,7 +13,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Filter } from "lucide-react";
+import { Filter, Sidebar } from "lucide-react";
 import {
   Pagination,
   PaginationContent,
@@ -23,11 +23,24 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { useSession } from "next-auth/react";
+import toast from "react-hot-toast";
+import SidebarFilters from "@/components/UserComponents/Sidebar";
 
 function Page({ params }: { params: { search: string } }) {
+  // const { status } = useSession({
+  //   required: true,
+  //   onUnauthenticated() {
+  //     redirect("/user/auth");
+  //   },
+  // });
   const searchParams = useSearchParams();
   const [hotels, setHotels] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [nextPageToken, setNextPageToken] = useState<string | null>(null);
+  const hotelsPerPage = 9;
+  const totalPages = Math.ceil(hotels.length / hotelsPerPage);
 
   const search = {
     location: searchParams.get("location"),
@@ -48,22 +61,85 @@ function Page({ params }: { params: { search: string } }) {
     children: search.children ? Number(search.children) : 0,
     rooms: search.rooms ? Number(search.rooms) : 1,
   });
+  const fetchHotels = async (pageToken?: string) => {
+    const loadingToast = toast.loading("Fetching available hotels...");
+    try {
+      const response = await fetch(
+        `/api/getHotels?location=${search.location}&check_in_date=${
+          search.check_in_date
+        }&check_out_date=${search.check_out_date}&adults=${search.adults}${
+          pageToken ? `&next_page_token=${pageToken}` : ""
+        }`
+      );
+      const data = await response.json();
+
+      // Append new hotels to existing ones if using pageToken
+      if (pageToken) {
+        setHotels((prevHotels) => [...prevHotels, ...(data.properties || [])]);
+      } else {
+        setHotels(data.properties || []);
+      }
+
+      setNextPageToken(data.serpapi_pagination?.next_page_token || null);
+      setLoading(false);
+      toast.success("Hotels loaded successfully!", {
+        id: loadingToast,
+      });
+    } catch (error) {
+      console.error("Error fetching hotels:", error);
+      setLoading(false);
+      toast.error("Failed to load hotels", {
+        id: loadingToast,
+      });
+    }
+  };
+
+  const handlePageChange = async (page: number) => {
+    setCurrentPage(page);
+    if (page > currentPage && nextPageToken) {
+      await fetchHotels(nextPageToken);
+    }
+  };
+
+  const getCurrentPageHotels = () => {
+    const startIndex = (currentPage - 1) * hotelsPerPage;
+    return hotels.slice(startIndex, startIndex + hotelsPerPage);
+  };
+
+  // Update the pagination JSX
+  const renderPaginationItems = () => {
+    const items = [];
+    const maxVisiblePages = 5;
+
+    for (let i = 1; i <= totalPages; i++) {
+      if (
+        i === 1 ||
+        i === totalPages ||
+        (i >= currentPage - 1 && i <= currentPage + 1)
+      ) {
+        items.push(
+          <PaginationItem key={i}>
+            <PaginationLink
+              href="#"
+              isActive={currentPage === i}
+              onClick={() => handlePageChange(i)}
+            >
+              {i}
+            </PaginationLink>
+          </PaginationItem>
+        );
+      } else if (i === currentPage - 2 || i === currentPage + 2) {
+        items.push(
+          <PaginationItem key={i}>
+            <PaginationEllipsis />
+          </PaginationItem>
+        );
+      }
+    }
+    return items;
+  };
 
   useEffect(() => {
-    const fetchHotels = async () => {
-      try {
-        const response = await fetch(
-          `/api/getHotels?location=${search.location}&check_in_date=${search.check_in_date}&check_out_date=${search.check_out_date}&adults=${search.adults}`
-        );
-        const data = await response.json();
-        setHotels(data.properties || []);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching hotels:", error);
-        setLoading(false);
-      }
-    };
-
     fetchHotels();
   }, [
     search.location,
@@ -81,26 +157,23 @@ function Page({ params }: { params: { search: string } }) {
         <Sheet>
           <SheetTrigger>
             <Button variant="outline">
-              <Filter /> Filter
+              <Filter className="h-4 w-4 mr-2" /> Filter
             </Button>
           </SheetTrigger>
           <SheetContent side="left">
             <SheetHeader>
-              <SheetTitle>Are you absolutely sure?</SheetTitle>
-              <SheetDescription>
-                This action cannot be undone. This will permanently delete your
-                account and remove your data from our servers.
-              </SheetDescription>
+              <SheetTitle>Filters</SheetTitle>
             </SheetHeader>
+            <SidebarFilters />
           </SheetContent>
         </Sheet>
       </div>
       <div className="grid grid-cols-4 gap-4 w-full mt-6 px-4">
-        <div className="border h-[40vh] hidden lg:flex flex-col items-center p-2 rounded-lg">
-          Sidebar Goes Here
+        <div className="border h-auto hidden lg:block p-2 rounded-lg">
+          <SidebarFilters />
         </div>
         <div className="col-span-4 md:col-span-4 lg:col-span-3">
-          <div className="grid grid-cols-1 md:grid-cols-4  lg:grid-cols-3  gap-4 mx-auto w-full ">
+          <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-3 gap-4 mx-auto w-full">
             {loading ? (
               <div>
                 <div className="flex flex-col space-y-3">
@@ -112,35 +185,32 @@ function Page({ params }: { params: { search: string } }) {
                 </div>
               </div>
             ) : (
-              hotels
-                .slice(0, 9)
-                .map((hotel, index) => (
-                  <HotelListing key={index} hotel={hotel} />
-                ))
+              getCurrentPageHotels().map((hotel, index) => (
+                <HotelListing key={index} hotel={hotel} />
+              ))
             )}
           </div>
+
           {!loading && (
             <Pagination className="mt-6">
               <PaginationContent>
                 <PaginationItem>
-                  <PaginationPrevious href="#" />
+                  <PaginationPrevious
+                    href="#"
+                    onClick={() =>
+                      currentPage > 1 && handlePageChange(currentPage - 1)
+                    }
+                    className={
+                      currentPage === 1 ? "pointer-events-none opacity-50" : ""
+                    }
+                  />
                 </PaginationItem>
+                {renderPaginationItems()}
                 <PaginationItem>
-                  <PaginationLink href="#" isActive>
-                    1
-                  </PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationLink href="#">2</PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationLink href="#">3</PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationEllipsis />
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationNext href="#" />
+                  <PaginationNext
+                    href="#"
+                    onClick={() => handlePageChange(currentPage + 1)}
+                  />
                 </PaginationItem>
               </PaginationContent>
             </Pagination>

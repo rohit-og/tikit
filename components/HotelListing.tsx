@@ -1,3 +1,4 @@
+"use client";
 import {
   Card,
   CardContent,
@@ -7,9 +8,18 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Image from "next/image";
-import { ChevronRight, MapPin } from "lucide-react";
+import { ChevronRight, MapPin, Star } from "lucide-react";
 import { Button } from "./ui/button";
 import Link from "next/link";
+
+interface Rating {
+  stars: number;
+  count: number;
+}
+interface Rating {
+  stars: number;
+  count: number;
+}
 
 interface HotelProps {
   name: string;
@@ -24,13 +34,22 @@ interface HotelProps {
   images: {
     thumbnail: string;
   }[];
+  ratings: Rating[];
 }
 
 export const HotelListing = ({ hotel }: { hotel: HotelProps }) => {
+  const totalReviews =
+    hotel.ratings?.reduce((sum, rating) => sum + rating.count, 0) || 0;
+  const averageRating =
+    hotel.ratings?.reduce(
+      (sum, rating) => sum + rating.stars * rating.count,
+      0
+    ) / totalReviews || 0;
+  const thumbnailUrl = hotel.images?.[0]?.thumbnail || "/images/hotel-1.jpg";
   return (
     <Card className="hover:scale-105 transition-all flex flex-col justify-between">
       <Image
-        src={hotel.images[0].thumbnail}
+        src={thumbnailUrl}
         alt={hotel.name}
         width={240}
         height={240}
@@ -43,15 +62,17 @@ export const HotelListing = ({ hotel }: { hotel: HotelProps }) => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="flex justify-between">
-          <p>{/* <b>{hotel.rate_per_night.lowest}</b>/night */}</p>
-          {/* <p>
-            {hotel.location.latitude.toFixed(2)},{" "}
-            {hotel.location.longitude.toFixed(2)}
-          </p> */}
+        <div className="flex items-center gap-2">
+          <div className="flex items-center">
+            <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+            <span className="ml-1 font-medium">{averageRating.toFixed(1)}</span>
+          </div>
+          <span className="text-muted-foreground text-sm">
+            ({totalReviews} reviews)
+          </span>
         </div>
       </CardContent>
-      <CardFooter className="">
+      <CardFooter>
         <Link href="/hotels/hotel-details/1" className="w-full">
           <Button className="w-full">
             See availability
