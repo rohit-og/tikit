@@ -44,7 +44,7 @@ const page = ({ params }: { params: { id: string } }) => {
   return (
     <div className="w-full px-4 py-6">
       {/* header */}
-      <div className="max-w-7xl mx-auto flex justify-between items-center">
+      {/* <div className="max-w-7xl mx-auto flex justify-between items-center">
         <div className="flex flex-col gap-4 max-w-[70%]">
           <h1 className="text-2xl sm:text-3xl font-medium">
             {selectedHotel?.name}
@@ -59,7 +59,7 @@ const page = ({ params }: { params: { id: string } }) => {
           </div>
         </div>
         <ActionButtons />
-      </div>
+      </div> */}
       {/* header */}
       {/* content */}
 
@@ -70,7 +70,7 @@ const page = ({ params }: { params: { id: string } }) => {
             <Card className="">
               <CardHeader>
                 <CardTitle className="text-3xl font-medium">
-                  {selectedHotel?.room_types?.[0]?.name || "Standard Room"}
+                  {selectedHotel?.name}
                 </CardTitle>
                 <CardDescription className="text-lg">
                   Fits {selectedHotel?.adults || 2} Adults
