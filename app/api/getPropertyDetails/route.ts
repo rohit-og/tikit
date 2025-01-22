@@ -17,7 +17,7 @@ export async function GET(request: Request) {
       { status: 500 }
     );
   }
-  const apiUrl = `https://serpapi.com/search.json?engine=google_hotels&q=${location}&check_in_date=${checkInDate}&check_out_date=${checkOutDate}&adults=${adults}&currency=INR&gl=us&hl=en&property_token=${propertyToken}&api_key=${apiKey}`;
+  const apiUrl = `https://serpapi.com/search.json?engine=google_hotels&q=${location}&check_in_date=${checkInDate}&check_out_date=${checkOutDate}&adults=${adults}&currency=INR&gl=us&hl=en&property_token=${propertyToken}&api_key=${apiKey}&currency=INR`;
 
   try {
     const response = await fetch(apiUrl);

@@ -10,6 +10,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { useHotel } from "@/store/HotelContext";
 
 const ratings = [
   {
@@ -122,7 +123,11 @@ const reviews = [
   },
 ];
 
-const UserRatings = () => {
+const UserRatings = ({}) => {
+  const { selectedHotel } = useHotel() ?? { selectedHotel: null };
+
+  const rat = selectedHotel?.rating;
+  console.log(rat);
   return (
     <div id="ratings">
       <h1 className="text-3xl font-semibold my-4">User ratings & reviews</h1>

@@ -39,19 +39,28 @@ const HotelImages = () => {
       <div className="absolute bottom-0 left-0 w-full h-32 flex items-end justify-start p-4 rounded-b-md bg-gradient-to-t from-black">
         <Dialog>
           <DialogTrigger>
-            <h1 className="text-lg font-medium">38+ Property Photos</h1>
+            <h1 className="text-lg font-medium">
+              {selectedHotel?.images.length} Property Photos
+            </h1>
           </DialogTrigger>
           <DialogContent className="p-10 w-full flex items-center justify-center">
             <Carousel className="w-full max-w-[400px]">
               <CarouselContent>
-                {Array.from({ length: 5 }).map((_, index) => (
+                {selectedHotel?.images.map((_, index) => (
                   <CarouselItem key={index}>
                     <div className="p-1">
                       <Card>
                         <CardContent className="flex aspect-square items-center justify-center p-6">
-                          <span className="text-4xl font-semibold">
-                            {index + 1}
-                          </span>
+                          <Image
+                            src={
+                              selectedHotel?.images[index]?.thumbnail ||
+                              "/images/hotel-2.jpg"
+                            }
+                            alt={selectedHotel?.name || "Hotel image"}
+                            className="w-full object-cover relative  h-[69vh] rounded-lg shadow-lg"
+                            width={350}
+                            height={10}
+                          />
                         </CardContent>
                       </Card>
                     </div>

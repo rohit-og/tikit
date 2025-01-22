@@ -100,7 +100,9 @@ const page = ({ params }: { params: { id: string } }) => {
                     ₹ {selectedHotel?.rate_per_night?.lowest || "8,599"}
                     <span className="text-2xl font-medium">/Night</span>
                   </h1>
-                  <Button className="w-[199px]">Book Now</Button>
+                  <Link href="/bookings">
+                    <Button className="w-[199px]">Book Now</Button>
+                  </Link>
                 </div>
               </CardContent>
               <CardFooter>

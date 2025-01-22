@@ -6,9 +6,9 @@ import Confirmation from "@/components/BookingComponents/Confirmation";
 
 const page = () => {
   return (
-    <div className="w-full">
+    <div className="w-full min-h-screen">
       <div className="max-w-7xl mx-auto">
-        <Tabs defaultValue="overview" className="w-[400px]">
+        <Tabs defaultValue="overview" className="">
           <TabsList>
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="payment">Payment</TabsTrigger>
