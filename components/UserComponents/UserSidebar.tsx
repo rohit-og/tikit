@@ -1,7 +1,9 @@
+"use client";
 import Link from "next/link";
 import React from "react";
 import { Button } from "../ui/button";
 import { LifeBuoy, LogOut, Settings, Ticket, UserPen } from "lucide-react";
+import { signOut } from "next-auth/react";
 
 const UserSidebar = () => {
   return (
@@ -32,7 +34,11 @@ const UserSidebar = () => {
           </Button>
         </Link>
         <Link href="/user/profile/your-bookings" className="w-full">
-          <Button variant="ghost" className="w-full flex justify-start gap-2">
+          <Button
+            onClick={() => signOut({ callbackUrl: "/user/auth" })}
+            variant="ghost"
+            className="w-full flex justify-start gap-2"
+          >
             <LogOut />
             Logout
           </Button>

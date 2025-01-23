@@ -97,7 +97,7 @@ const page = ({ params }: { params: { id: string } }) => {
                 </p>
                 <div className="flex flex-col gap-2">
                   <h1 className="text-3xl font-semibold">
-                    ₹ {selectedHotel?.rate_per_night?.lowest || "8,599"}
+                    {selectedHotel?.rate_per_night?.lowest || "8,599"}
                     <span className="text-2xl font-medium">/Night</span>
                   </h1>
                   <Link href="/bookings">

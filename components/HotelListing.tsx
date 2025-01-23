@@ -84,7 +84,7 @@ export const HotelListing = ({ hotel }: { hotel: HotelProps }) => {
         </div>
         <div>
           <p className="text-2xl font-semibold mt-2">
-            {hotel.rate_per_night.lowest}
+            {hotel.rate_per_night?.lowest}
             <span className="text-xl font-medium">/Night</span>
           </p>
         </div>
