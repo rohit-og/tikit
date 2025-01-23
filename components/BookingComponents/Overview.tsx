@@ -17,8 +17,11 @@ import {
 import { Input } from "@/components/ui/input";
 
 const formSchema = z.object({
-  username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
+  email: z.string().min(2, {
+    message: "email must be at least 2 characters.",
+  }),
+  phone: z.number().min(10, {
+    message: "email must be at least 2 characters.",
   }),
 });
 
@@ -45,7 +48,7 @@ const Overview = () => {
             <h1>Secure Checkout</h1>
             <p>Checkout Secureley - it takes a few minutes.</p>
             <div>
-              <h1>Personal Details</h1>
+              <h1>Contact Details</h1>
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(onSubmit)}

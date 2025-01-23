@@ -153,7 +153,7 @@ const page = () => {
                   Sign In
                 </TabsTrigger>
                 <TabsTrigger className="w-1/2" value="register">
-                  Regiser
+                  Register
                 </TabsTrigger>
               </TabsList>
               <TabsContent value="login">

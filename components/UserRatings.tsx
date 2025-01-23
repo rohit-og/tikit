@@ -11,6 +11,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { useHotel } from "@/store/HotelContext";
+import { ScrollArea } from "./ui/scroll-area";
 
 const ratings = [
   {
@@ -157,58 +158,60 @@ const UserRatings = ({}) => {
             </div>
           </div>
         </div>
-        <div className="col-span-1 lg:col-span-2 flex flex-col gap-4">
-          {reviews.map((e) => (
-            <div className="border rounded-lg p-6">
-              <div className="flex justify-between items-center">
-                <div>
-                  <h1 className="text-lg font-semibold">{e.ReviewTitle}</h1>
-                  <p className="text-secondary-foreground text-md">
-                    {e.UserName} | {e.Date}
-                  </p>
+        <ScrollArea className="col-span-1 lg:col-span-2 h-[40vh] px-3 md:px-4">
+          <div className=" flex flex-col gap-4">
+            {reviews.map((e) => (
+              <div className="border rounded-lg p-6">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h1 className="text-lg font-semibold">{e.ReviewTitle}</h1>
+                    <p className="text-secondary-foreground text-md">
+                      {e.UserName} | {e.Date}
+                    </p>
+                  </div>
+                  <div className="flex items-center justify-center h-12 px-4 border rounded-lg gap-2">
+                    <p className="text-xl font-semibold">{e.Rating}</p>
+                    <Star size={18} />
+                  </div>
                 </div>
-                <div className="flex items-center justify-center h-12 px-4 border rounded-lg gap-2">
-                  <p className="text-xl font-semibold">{e.Rating}</p>
-                  <Star size={18} />
+                <div className="flex flex-col gap-6 mt-4">
+                  <p>{e.ReviewContent}</p>
+                  <div className="flex gap-2 items-start">
+                    <p>Helpful</p>{" "}
+                    <ThumbsUp
+                      className="hover:scale-110 transition-all cursor-pointer"
+                      size={18}
+                    />
+                  </div>
                 </div>
               </div>
-              <div className="flex flex-col gap-6 mt-4">
-                <p>{e.ReviewContent}</p>
-                <div className="flex gap-2 items-start">
-                  <p>Helpful</p>{" "}
-                  <ThumbsUp
-                    className="hover:scale-110 transition-all cursor-pointer"
-                    size={18}
-                  />
-                </div>
-              </div>
-            </div>
-          ))}
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious href="#" />
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#" isActive>
-                  1
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#">2</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#">3</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationEllipsis />
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationNext href="#" />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-        </div>
+            ))}
+            {/* <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious href="#" />
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationLink href="#" isActive>
+                    1
+                  </PaginationLink>
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationLink href="#">2</PaginationLink>
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationLink href="#">3</PaginationLink>
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationEllipsis />
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationNext href="#" />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination> */}
+          </div>
+        </ScrollArea>
       </div>
     </div>
   );
