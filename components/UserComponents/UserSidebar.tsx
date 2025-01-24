@@ -4,8 +4,14 @@ import React from "react";
 import { Button } from "../ui/button";
 import { LifeBuoy, LogOut, Settings, Ticket, UserPen } from "lucide-react";
 import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const UserSidebar = () => {
+  const router = useRouter();
+
+  const handleBookingsClick = () => {
+    router.push("/user/profile/your-bookings");
+  };
   return (
     <div className="w-full max-h-fit">
       <div className="flex flex-col gap-2">
@@ -16,7 +22,11 @@ const UserSidebar = () => {
           </Button>
         </Link>
         <Link href="/user/profile/your-bookings" className="w-full">
-          <Button variant="ghost" className="w-full flex justify-start gap-2">
+          <Button
+            variant="ghost"
+            className="w-full flex justify-start gap-2"
+            onClick={handleBookingsClick}
+          >
             <Ticket />
             Your Booking
           </Button>

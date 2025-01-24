@@ -5,6 +5,7 @@ import { BlobProvider, PDFDownloadLink } from "@react-pdf/renderer";
 import { CheckCircle } from "lucide-react";
 import Link from "next/link";
 import TicketPDF from "./TicketPDF";
+import { useEffect } from "react";
 
 const Confirmation = () => {
   const bookingDetails = {
@@ -15,6 +16,26 @@ const Confirmation = () => {
     quantity: "2 Tickets",
     totalPaid: "$165.00",
   };
+
+  const createBooking = async () => {
+    try {
+      const response = await fetch("/api/bookings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      console.log("Booking created:", data);
+    } catch (error) {
+      console.error("Error creating booking:", error);
+    }
+  };
+
+  useEffect(() => {
+    createBooking();
+  }, []);
+
   return (
     <div className="min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
